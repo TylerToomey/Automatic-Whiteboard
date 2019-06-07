@@ -13,14 +13,16 @@ my_path = os.path.dirname(__file__)
 BLUR_AMMOUNT = 4
 THRESHOLD = 240
 IMAGE_SIZE_MAX = 1500
-IMAGE_SCALE = 1
-GAMMA = 1
-
-MAX_BRUSH = 15
-MIN_BRUSH = 1
+IMAGE_SCALE = 2
+GAMMA = 2
 
 SPACING = 20
 BRUSH_SIZE = 1
+
+MAX_BRUSH = SPACING + GAMMA
+MIN_BRUSH = 1
+
+
 
 width = 0
 height = 0
@@ -35,7 +37,7 @@ def processImage(inputImg):
         exif_dict = piexif.load(img.info["exif"])
         if piexif.ImageIFD.Orientation in exif_dict["0th"]:
             orientation = exif_dict["0th"].pop(piexif.ImageIFD.Orientation)
-            exif_bytes = piexif.dump(exif_dict)
+            #exif_bytes = piexif.dump(exif_dict)
 
             if orientation == 2:
                 img = img.transpose(Image.FLIP_LEFT_RIGHT)
@@ -92,11 +94,12 @@ def processImage(inputImg):
             pixel = sample.getpixel((x,y))
             if pixel < THRESHOLD:
                 BRUSH_SIZE = ((sample.getpixel((x,y)) - 1) / (255 - 1)) * (MAX_BRUSH - MIN_BRUSH) + MIN_BRUSH
-                BRUSH_SIZE = math.ceil(MAX_BRUSH-BRUSH_SIZE) * GAMMA
+                BRUSH_SIZE = math.ceil(MAX_BRUSH-BRUSH_SIZE) 
                 stack.append((x,y,BRUSH_SIZE))
             else:
                  BRUSH_SIZE = 0
-            painter.ellipse((x-BRUSH_SIZE,y-BRUSH_SIZE,x+BRUSH_SIZE,y+BRUSH_SIZE),ImageColor.getcolor('black','1'))
+            BL = round(BRUSH_SIZE / 2)
+            painter.ellipse((x-BL,y-BL,x+BL,y+BL),ImageColor.getcolor('black','1'))
         
         if flipTable == 0:
             stack.reverse()
@@ -105,15 +108,16 @@ def processImage(inputImg):
         stack.clear()
 
     canvas.save(my_path+"/output.png")
+    #canvas.filter(ImageFilter.BLUR()).resize((widthOld,heightOld),resample=Image.BICUBIC).save(my_path+"/outputSCALE.png")
     print("FINISHED. Saved to ", my_path, "/output.png")
 
-    return canvas
+    return None
 
 def getPoints():
     return outPoints
 
 def main():
-    myImg = processImage(sys.argv[1])
+    processImage(sys.argv[1])
     output = open("output.txt","w+")
     getPoints()
     toWrite = ""
