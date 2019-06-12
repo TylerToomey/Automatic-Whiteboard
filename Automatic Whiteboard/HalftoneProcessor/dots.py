@@ -13,10 +13,10 @@ my_path = os.path.dirname(__file__)
 BLUR_AMMOUNT = 4
 THRESHOLD = 240
 IMAGE_SIZE_MAX = 1500
-IMAGE_SCALE = 2
-GAMMA = 2
+IMAGE_SCALE = 1
+GAMMA = 3
 
-SPACING = 20
+SPACING = 150
 BRUSH_SIZE = 1
 
 MAX_BRUSH = SPACING + GAMMA
@@ -123,7 +123,7 @@ def main():
     toWrite = ""
     for i in outPoints:
         for k in i:
-            toWrite += str(k[0]) + "," + str(k[1]) + "," + str(k[2]) + "/"
+            toWrite += str(k[0]) + "," + str(k[1]) + "," + str(k[2]) + "\n"
     toWrite+="<"
     output.write(toWrite)
     output.close()
