@@ -32,7 +32,6 @@ def processImage(inputImg):
     img = Image.open(my_path+"/"+inputImg).convert('LA').filter(ImageFilter.GaussianBlur(BLUR_AMMOUNT)).convert('L')
     
     ## ACCOUNT FOR AND REMOVE EXIF ORIENTATION DATA 
-    ### JESUS CHRIST FUCK THIS PART
     if "exif" in img.info:
         exif_dict = piexif.load(img.info["exif"])
         if piexif.ImageIFD.Orientation in exif_dict["0th"]:
